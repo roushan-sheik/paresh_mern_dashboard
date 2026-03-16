@@ -1,30 +1,20 @@
 "use client";
 
-import React from "react";
 import {
     Plus,
-    Search,
     Edit2,
     Trash2,
     ShieldCheck,
     Calendar,
     Hash,
-    DollarSign,
-    Box
+    DollarSign
 } from "lucide-react";
 import Link from "next/link";
-import { IPackage } from "@/types/package";
-
-const mockPackages: IPackage[] = [
-    { _id: "699fcf0881f3d6b77592aa9e", package_name: "Basic Health Plan", validity_duration: 30, cost: 499, total_sessions: 8 },
-    { _id: "699fcf0881f3d6b77592aa9f", package_name: "Standard Health Plan", validity_duration: 90, cost: 1299, total_sessions: 8 },
-    { _id: "699fcf0881f3d6b77592aaa0", package_name: "Premium Health Plan", validity_duration: 180, cost: 2299, total_sessions: 9 },
-    { _id: "699fcf0881f3d6b77592aaa1", package_name: "Family Basic Plan", validity_duration: 30, cost: 899, total_sessions: 5 },
-    { _id: "699fcf0881f3d6b77592aaa2", package_name: "Family Premium Plan", validity_duration: 180, cost: 3499, total_sessions: 12 },
-    { _id: "699fcf0881f3d6b77592aaa3", package_name: "Senior Citizen Plan", validity_duration: 365, cost: 1999, total_sessions: 9 },
-];
+import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
 
 export default function PackagesPage() {
+    const { data: packageData, isLoading } = useGetAllPackagesQuery("");
+
     return (
         <div className="space-y-8 pb-10">
             {/* Header Section */}
@@ -56,7 +46,15 @@ export default function PackagesPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {mockPackages.map((pkg) => (
+                            {isLoading ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td colSpan={5} className="px-8 py-6">
+                                            <div className="h-10 bg-slate-100 rounded-xl w-full"></div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : packageData?.data.map((pkg) => (
                                 <tr key={pkg._id} className="hover:bg-slate-50/50 transition-colors group">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-4">
@@ -102,6 +100,18 @@ export default function PackagesPage() {
                                     </td>
                                 </tr>
                             ))}
+                            {!isLoading && (!packageData?.data || packageData.data.length === 0) && (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-20 text-center">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                                                <ShieldCheck className="w-8 h-8" />
+                                            </div>
+                                            <p className="text-slate-400 font-bold">No packages found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
