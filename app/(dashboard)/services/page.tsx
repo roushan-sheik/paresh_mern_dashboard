@@ -8,9 +8,15 @@ import {
     Stethoscope
 } from "lucide-react";
 import { useGetAllServicesQuery } from "@/redux/api/serviceApi";
+import { IService } from "@/types/service";
+import { useState } from "react";
+import DeleteServiceModal from "@/components/services/DeleteServiceModal";
 
 export default function ServiceListPage() {
     const { data: serviceData, isLoading } = useGetAllServicesQuery();
+
+    const [selectedService, setSelectedService] = useState<IService | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     return (
         <div className="space-y-8">
@@ -74,6 +80,10 @@ export default function ServiceListPage() {
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button
+                                                onClick={() => {
+                                                    setSelectedService(service);
+                                                    setIsDeleteModalOpen(true);
+                                                }}
                                                 className="p-2.5 hover:bg-red-50 hover:text-red-600 text-slate-400 rounded-xl transition-all"
                                                 title="Delete Service"
                                             >
@@ -87,6 +97,17 @@ export default function ServiceListPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Modals Rendering */}
+            {selectedService && isDeleteModalOpen && (
+                <DeleteServiceModal
+                    service={selectedService}
+                    onClose={() => {
+                        setSelectedService(null);
+                        setIsDeleteModalOpen(false);
+                    }}
+                />
+            )}
         </div>
     );
 }
