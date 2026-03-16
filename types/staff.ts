@@ -2,9 +2,8 @@
 import { IUser } from "./auth";
 
 export interface IBranch {
-    _id: string; // Internal MongoDB ID
-    id: string; // Public ID if applicable
-    name: string;
+    _id: string;
+    branch_name: string;
     location: string;
     status: "active" | "inactive";
     createdAt: string;
