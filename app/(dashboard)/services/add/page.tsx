@@ -7,26 +7,22 @@ import {
     Image as ImageIcon,
     Save,
     ArrowLeft,
-    Stethoscope,
     Clock,
     DollarSign,
-    Layout
+    Layout,
+    Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { IOverviewSection, ISubSection } from "@/types/service";
+import { useRouter } from "next/navigation";
+import { useCreateServiceMutation } from "@/redux/api/serviceApi";
+import { toast } from "sonner";
 
-interface SubSection {
-    heading: string;
-    description: string;
-}
-
-interface OverviewSection {
-    heading: string;
-    description: string;
-    sub_sections: SubSection[];
-}
 
 export default function AddServicePage() {
+    const router = useRouter();
+    const [createService, { isLoading }] = useCreateServiceMutation();
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +32,7 @@ export default function AddServicePage() {
         cost: "",
         description: "",
         image: null as File | null,
-        overview: [] as OverviewSection[]
+        overview: [] as IOverviewSection[]
     });
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +60,7 @@ export default function AddServicePage() {
         }));
     };
 
-    const updateOverview = (index: number, field: keyof OverviewSection, value: string) => {
+    const updateOverview = (index: number, field: keyof IOverviewSection, value: string) => {
         setForm(prev => ({
             ...prev,
             overview: prev.overview.map((item, i) => i === index ? { ...item, [field]: value } : item)
@@ -83,7 +79,7 @@ export default function AddServicePage() {
         }));
     };
 
-    const updateSubSection = (overviewIndex: number, subIndex: number, field: keyof SubSection, value: string) => {
+    const updateSubSection = (overviewIndex: number, subIndex: number, field: keyof ISubSection, value: string) => {
         setForm(prev => ({
             ...prev,
             overview: prev.overview.map((item, i) =>
@@ -108,6 +104,30 @@ export default function AddServicePage() {
                     : item
             )
         }));
+    };
+
+    const handleSave = async () => {
+        // Validation
+        if (!form.service_name || !form.duration || !form.cost || !form.description || !form.image) {
+            toast.error("Please fill in all basic fields and upload an image.");
+            return;
+        }
+        try {
+            const formData = new FormData();
+            formData.append("service_name", form.service_name);
+            formData.append("duration", form.duration);
+            formData.append("cost", form.cost);
+            formData.append("description", form.description);
+            formData.append("image", form.image);
+
+            // Backend expects overview as stringified JSON
+            formData.append("overview", JSON.stringify(form.overview));
+            await createService(formData).unwrap();
+            toast.success("Service created successfully!");
+            router.push("/services");
+        } catch (err: any) {
+            toast.error(err.data?.message || "Failed to create service");
+        }
     };
 
     return (
@@ -310,11 +330,16 @@ export default function AddServicePage() {
                         {/* Final Submit Action */}
                         <div className="pt-6">
                             <button
-                                className="w-full bg-blue-600 text-white rounded-2xl py-5 font-extrabold hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 active:scale-[0.98] text-lg"
-                                onClick={() => (window as any).alert("Static form data log: " + JSON.stringify(form))}
+                                disabled={isLoading}
+                                className="w-full bg-blue-600 text-white rounded-2xl py-5 font-extrabold hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 active:scale-[0.98] text-lg disabled:opacity-70"
+                                onClick={handleSave}
                             >
-                                <Save className="w-6 h-6" />
-                                <span>Create Healthcare Service</span>
+                                {isLoading ? (
+                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                ) : (
+                                    <Save className="w-6 h-6" />
+                                )}
+                                <span>{isLoading ? "Creating Service..." : "Create Healthcare Service"}</span>
                             </button>
                         </div>
                     </div>
