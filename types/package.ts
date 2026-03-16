@@ -1,10 +1,21 @@
 // types/package.ts
+import { IOverviewSection } from "./service";
+
+export interface IPackageService {
+    service_id: string;
+    required_sessions: number;
+}
+
 export interface IPackage {
-    _id: string;
+    _id?: string;
     package_name: string;
-    validity_duration: number; // in days
+    validity_duration: number;
     cost: number;
-    total_sessions: number;
+    description: string;
+    image: string | File;
+    total_sessions?: number; // Calculated field from backend for list view
+    overview: IOverviewSection[];
+    services: IPackageService[];
     isDeleted?: boolean;
 }
 
