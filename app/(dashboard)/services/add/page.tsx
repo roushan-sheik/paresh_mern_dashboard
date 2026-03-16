@@ -150,7 +150,7 @@ export default function AddServicePage() {
                 <div className="lg:col-span-1 space-y-6">
                     {/* Image Upload */}
                     <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm space-y-4">
-                        <label className="text-sm font-bold text-slate-700 block ml-1">Service Image</label>
+                        <label className="text-sm font-bold text-slate-700 block ml-1">Service Image <span className="text-red-500">*</span></label>
                         <div
                             onClick={() => fileInputRef.current?.click()}
                             className={cn(
@@ -184,7 +184,7 @@ export default function AddServicePage() {
                     <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm space-y-6">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2">
-                                <Clock className="w-4 h-4 text-blue-500" /> Duration (mins)
+                                <Clock className="w-4 h-4 text-blue-500" /> Duration (mins) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="number"
@@ -196,7 +196,7 @@ export default function AddServicePage() {
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2">
-                                <DollarSign className="w-4 h-4 text-emerald-500" /> Cost ($)
+                                <DollarSign className="w-4 h-4 text-emerald-500" /> Cost ($) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="number"
@@ -215,7 +215,7 @@ export default function AddServicePage() {
                         {/* Basic Info */}
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Service Name</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Service Name <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     placeholder="Enter service name..."
@@ -225,7 +225,7 @@ export default function AddServicePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Short Description</label>
+                                <label className="text-sm font-bold text-slate-700 ml-1">Short Description <span className="text-red-500">*</span></label>
                                 <textarea
                                     placeholder="Brief explanation of the service..."
                                     rows={3}

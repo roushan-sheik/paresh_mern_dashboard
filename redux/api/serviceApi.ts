@@ -29,7 +29,22 @@ export const serviceApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Service"],
         }),
+
+        // get single service details
+        getServiceById: builder.query<any, string>({
+            query: (id) => `/services/${id}`,
+            providesTags: ["Service"],
+        }),
+        // update service
+        updateService: builder.mutation<any, { id: string; data: FormData }>({
+            query: ({ id, data }) => ({
+                url: `/services/${id}`,
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["Service"],
+        }),
     }),
 });
 
-export const { useGetAllServicesQuery, useCreateServiceMutation, useDeleteServiceMutation } = serviceApi;
+export const { useGetAllServicesQuery, useCreateServiceMutation, useDeleteServiceMutation, useGetServiceByIdQuery, useUpdateServiceMutation } = serviceApi;

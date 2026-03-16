@@ -11,12 +11,14 @@ import { useGetAllServicesQuery } from "@/redux/api/serviceApi";
 import { IService } from "@/types/service";
 import { useState } from "react";
 import DeleteServiceModal from "@/components/services/DeleteServiceModal";
+import UpdateServiceModal from "@/components/services/UpdateServiceModal";
 
 export default function ServiceListPage() {
     const { data: serviceData, isLoading } = useGetAllServicesQuery();
 
     const [selectedService, setSelectedService] = useState<IService | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     return (
         <div className="space-y-8">
@@ -74,6 +76,10 @@ export default function ServiceListPage() {
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
+                                                onClick={() => {
+                                                    setSelectedService(service);
+                                                    setIsUpdateModalOpen(true);
+                                                }}
                                                 className="p-2.5 hover:bg-blue-50 hover:text-blue-600 text-slate-400 rounded-xl transition-all"
                                                 title="Edit Service"
                                             >
@@ -97,6 +103,16 @@ export default function ServiceListPage() {
                     </table>
                 </div>
             </div>
+
+            {selectedService && isUpdateModalOpen && (
+                <UpdateServiceModal
+                    serviceId={selectedService._id!}
+                    onClose={() => {
+                        setSelectedService(null);
+                        setIsUpdateModalOpen(false);
+                    }}
+                />
+            )}
 
             {/* Modals Rendering */}
             {selectedService && isDeleteModalOpen && (
