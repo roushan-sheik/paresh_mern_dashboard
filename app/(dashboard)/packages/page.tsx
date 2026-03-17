@@ -11,8 +11,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
+import { useState } from "react";
+import UpdatePackageModal from "@/components/packages/UpdatePackageModal";
 
 export default function PackagesPage() {
+
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+
     const { data: packageData, isLoading } = useGetAllPackagesQuery("");
 
     return (
@@ -85,6 +92,10 @@ export default function PackagesPage() {
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
+                                                onClick={() => {
+                                                    setSelectedPackageId(pkg._id || null);
+                                                    setIsUpdateModalOpen(true);
+                                                }}
                                                 className="p-2.5 hover:bg-blue-50 hover:text-blue-600 text-slate-400 rounded-xl transition-all"
                                                 title="Edit Package"
                                             >
@@ -116,6 +127,14 @@ export default function PackagesPage() {
                     </table>
                 </div>
             </div>
+            <UpdatePackageModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setSelectedPackageId(null);
+                }}
+                packageId={selectedPackageId}
+            />
         </div>
     );
 }
