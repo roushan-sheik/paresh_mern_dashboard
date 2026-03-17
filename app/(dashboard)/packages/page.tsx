@@ -13,12 +13,16 @@ import Link from "next/link";
 import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
 import { useState } from "react";
 import UpdatePackageModal from "@/components/packages/UpdatePackageModal";
+import DeletePackageModal from "@/components/packages/DeletePackageModal";
+import { IPackage } from "@/types/package";
 
 export default function PackagesPage() {
 
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+    const [packageToDelete, setPackageToDelete] = useState<IPackage | null>(null);
 
     const { data: packageData, isLoading } = useGetAllPackagesQuery("");
 
@@ -102,6 +106,10 @@ export default function PackagesPage() {
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button
+                                                onClick={() => {
+                                                    setPackageToDelete(pkg);
+                                                    setIsDeleteModalOpen(true);
+                                                }}
                                                 className="p-2.5 hover:bg-red-50 hover:text-red-600 text-slate-400 rounded-xl transition-all"
                                                 title="Delete Package"
                                             >
@@ -134,6 +142,13 @@ export default function PackagesPage() {
                     setSelectedPackageId(null);
                 }}
                 packageId={selectedPackageId}
+            />
+            <DeletePackageModal
+                pkg={packageToDelete}
+                onClose={() => {
+                    setIsDeleteModalOpen(false);
+                    setPackageToDelete(null);
+                }}
             />
         </div>
     );

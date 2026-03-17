@@ -36,7 +36,22 @@ export const packageApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: (result, error, { id }) => ["Package", { type: "Package", id }],
         }),
+
+        // delete package
+        deletePackage: builder.mutation<{ success: boolean; message: string }, string>({
+            query: (id) => ({
+                url: `/packages/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Package"],
+        }),
     }),
 });
 
-export const { useGetAllPackagesQuery, useCreatePackageMutation, useGetPackageByIdQuery, useUpdatePackageMutation } = packageApi;
+export const { 
+    useGetAllPackagesQuery, 
+    useCreatePackageMutation, 
+    useGetPackageByIdQuery, 
+    useUpdatePackageMutation,
+    useDeletePackageMutation 
+} = packageApi;
